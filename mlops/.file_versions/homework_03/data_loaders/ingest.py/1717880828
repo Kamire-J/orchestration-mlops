@@ -1,0 +1,18 @@
+import requests
+from io import BytesIO
+import pandas as pd
+
+# URL of the Parquet file for March 2023
+url = 'https://github.com/Kamire-J/orchestration-mlops/raw/main/datasets/2023/yellow_tripdata_2023-03.parquet'
+
+@data_loader
+def ingest_files(**kwargs) -> pd.DataFrame:
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch data from {url}: {response.text}")
+
+    # Read the Parquet file into a DataFrame
+    df = pd.read_parquet(BytesIO(response.content))
+    return df
+
